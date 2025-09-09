@@ -17,7 +17,7 @@ Backend-only mini app that helps **two friends** split bills, keep budgets accur
 
 **Setup & Dev**
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/suhayl13/split-budget-tracker.git
 cd split-budget-tracker
 npm install
 npm run dev
