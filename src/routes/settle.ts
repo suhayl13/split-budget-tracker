@@ -5,10 +5,12 @@ import { Engine } from '../domain/engine';
 import { fromCents, nowIso, toCents } from '../lib/money';
 import { UsersConfig } from './users';
 import { JournalTx } from '../domain/journal';
+import { z } from 'zod';
 
 export const settleRouter = Router();
 
 settleRouter.post('/', (req, res) => {
+  try {
   const body = SettleSchema.parse(req.body);
   const state = Engine.applyJournal(repo.getAll(), UsersConfig);
 
@@ -49,4 +51,11 @@ settleRouter.post('/', (req, res) => {
     settlement: { ...tx, amount: fromCents(tx.amountCents) },
     capped: applyCents !== (body.amount ? toCents(body.amount) : applyCents),
   });
+} catch (err) {
+  if (err instanceof z.ZodError) {
+
+      return res.status(400).json({error:err.issues[0].message});
+    }
+    throw err;
+  }
 });
